@@ -238,6 +238,28 @@ test {
     maxParallelForks = testParallelForks
 }
 
+tasks.register('testE2e', Test) {
+    group = 'verification'
+    description = 'E2E smoke tests — @Tag(smoke); Jenkins contour gate'
+    dependsOn healthCheck
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'smoke'
+        excludeTags 'visual', 'ladder-ethalon'
+    }
+    systemProperty 'env', testEnv
+    systemProperty 'allureReportMode', allureReportMode
+    systemProperty 'allureAgentMode', allureAgentMode
+    configKeys.each { key ->
+        def override = System.getProperty(key)
+        if (override != null) {
+            systemProperty key, override
+        }
+    }
+    maxParallelForks = testParallelForks
+}
+
 def allureResultsDir = layout.buildDirectory.dir('allure-results').get().asFile
 
 def hasAllureResults = {

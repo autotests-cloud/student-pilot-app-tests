@@ -27,6 +27,19 @@ import static com.codeborne.selenide.Selenide.executeJavaScript;
 class LoginTests extends TestBase {
 
     private static final String WRONG_CREDENTIALS_MESSAGE = "Wrong login or password";
+    private static final String LOGIN_REQUIRED_MESSAGE =
+            "Login is required (minimum 3 characters)";
+
+    @Test
+    @Tag("smoke")
+    @Tag("negative")
+    @DisplayName("Empty username shows validation error")
+    void shouldShowValidationErrorWhenUsernameIsEmpty() {
+        loginPage.openPage()
+                .typePassword("password1")
+                .submitExpectingError()
+                .shouldHaveErrorMessage(LOGIN_REQUIRED_MESSAGE);
+    }
 
     @Test
     @Tag("e2e")
